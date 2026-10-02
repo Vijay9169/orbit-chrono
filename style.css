@@ -1,0 +1,442 @@
+:root {
+    --bg-color: #151619;
+    --clock-bg: radial-gradient(circle, #25262b 0%, #1c1d21 68%, #141518 100%);
+    --dial-text: #595c66;
+    --hub-bg: #1c1d21;
+    --hub-border: #2e3037;
+    --date-accent: #ff3b30;
+    --month-accent: #007aff;
+    --day-accent: #34c759;
+    --pomo-accent: #ff9500;
+    --surface: #22242a;
+    --surface-border: #32353e;
+    --text-main: #f0f2f5;
+    --text-dim: #7f8491;
+  }
+  
+  [data-theme="neon"] {
+    --bg-color: #0b0c10;
+    --clock-bg: radial-gradient(circle, #1f2833 0%, #10141a 70%, #07090c 100%);
+    --dial-text: #45a29e;
+    --hub-bg: #0b0c10;
+    --hub-border: #66fcf1;
+    --date-accent: #ff0055;
+    --month-accent: #00f2fe;
+    --day-accent: #00ff87;
+    --pomo-accent: #ffe600;
+    --surface: #141922;
+    --surface-border: #202b38;
+  }
+  
+  [data-theme="gold"] {
+    --bg-color: #171614;
+    --clock-bg: radial-gradient(circle, #292620 0%, #1e1b16 70%, #14120f 100%);
+    --dial-text: #7b7465;
+    --hub-bg: #211e18;
+    --hub-border: #443c2c;
+    --date-accent: #e6b800;
+    --month-accent: #d4af37;
+    --day-accent: #c5a059;
+    --pomo-accent: #ff8c00;
+    --surface: #242019;
+    --surface-border: #3b3425;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 16px;
+    user-select: none;
+    overflow-x: hidden;
+    transition: background-color 0.4s ease;
+  }
+  
+  .app-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .main-title {
+    font-size: 2.3rem;
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 1px;
+  }
+  
+  /* Header Utilities */
+  .top-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .tz-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  
+  .custom-select {
+    background: transparent;
+    color: var(--text-main);
+    border: none;
+    outline: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .badge {
+    background: #0f1013;
+    color: var(--month-accent);
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    font-family: monospace;
+  }
+  
+  .icon-btn {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    color: var(--text-dim);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .icon-btn.active {
+    color: var(--date-accent);
+    border-color: var(--date-accent);
+  }
+  
+  /* Clock Wrapper */
+  .clock-stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 10px 0;
+  }
+  
+  .clock-wrapper {
+    position: relative;
+    width: 530px;
+    height: 530px;
+    border-radius: 50%;
+    background: var(--clock-bg);
+    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.75), inset 0 2px 4px rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+  
+  #progressCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  /* Concentric Dials */
+  .dial {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+  
+  .dial-outer {
+    width: 490px;
+    height: 490px;
+    z-index: 2;
+    cursor: grab;
+    pointer-events: auto;
+  }
+  
+  .dial-outer:active {
+    cursor: grabbing;
+  }
+  
+  .dial-middle {
+    width: 380px;
+    height: 380px;
+    z-index: 3;
+  }
+  
+  .dial-inner {
+    width: 280px;
+    height: 280px;
+    z-index: 4;
+  }
+  
+  .dial-item {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: 50% 245px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--dial-text);
+    width: 32px;
+    margin-left: -16px;
+    text-align: center;
+    transition: color 0.25s, text-shadow 0.25s;
+  }
+  
+  .dial-middle .dial-item {
+    transform-origin: 50% 190px;
+    font-size: 0.85rem;
+  }
+  
+  .dial-inner .dial-item {
+    transform-origin: 50% 140px;
+    font-size: 0.85rem;
+  }
+  
+  /* Dynamic Active Highlights */
+  .dial-item.active-date {
+    color: var(--date-accent) !important;
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--date-accent);
+  }
+  
+  .dial-item.active-month {
+    color: var(--month-accent) !important;
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--month-accent);
+  }
+  
+  .dial-item.active-day {
+    color: var(--day-accent) !important;
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--day-accent);
+  }
+  
+  .dial-item.label-mode {
+    color: var(--dial-text);
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  
+  /* Center Hub */
+  .center-hub {
+    position: relative;
+    width: 165px;
+    height: 165px;
+    border-radius: 50%;
+    background: var(--hub-bg);
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 6px 18px rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--hub-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.15s ease;
+  }
+  
+  .center-hub:active {
+    transform: scale(0.96);
+  }
+  
+  .hub-view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  
+  .hub-view.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+  }
+  
+  /* Mode 1: Profile View */
+  .greeting-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  
+  .avatar-disc {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .avatar-icon {
+    width: 42px;
+    height: 42px;
+    fill: #1c1d21;
+  }
+  
+  /* Mode 2: Analog Hands */
+  .hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: 50% 100%;
+    border-radius: 6px;
+  }
+  
+  .hand-hour {
+    width: 6px;
+    height: 38px;
+    margin-left: -3px;
+    background: #ffffff;
+  }
+  
+  .hand-minute {
+    width: 4px;
+    height: 54px;
+    margin-left: -2px;
+    background: #d4d7dd;
+  }
+  
+  .hand-second {
+    width: 2px;
+    height: 60px;
+    margin-left: -1px;
+    background: var(--date-accent);
+  }
+  
+  .center-pin {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ffffff;
+    z-index: 12;
+  }
+  
+  /* Mode 3: Pomodoro */
+  .pomo-label {
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    color: var(--pomo-accent);
+    font-weight: 700;
+  }
+  
+  .pomo-digits {
+    font-size: 1.85rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin: 2px 0;
+  }
+  
+  .pomo-hint {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+  
+  /* Footer Controls Deck */
+  .controls-deck {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .modes-bar {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .ctrl-btn {
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--surface-border);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .ctrl-btn:hover {
+    color: #fff;
+  }
+  
+  .ctrl-btn.active {
+    background: var(--month-accent);
+    color: #ffffff;
+    border-color: var(--month-accent);
+    box-shadow: 0 2px 10px rgba(0, 122, 255, 0.3);
+  }
+  
+  /* Theme selector dots */
+  .themes-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  
+  .theme-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .theme-dot:hover {
+    transform: scale(1.2);
+  }
+  
+  .theme-dot.active {
+    border-color: #fff;
+  }
+  
+  .theme-dot[data-set-theme="dark"] { background: #2e3037; }
+  .theme-dot[data-set-theme="neon"] { background: #00ff87; }
+  .theme-dot[data-set-theme="gold"] { background: #d4af37; }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit Chrono | Advanced Radial Time Engine</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="dark">
+
+  <header class="app-header">
+    <h1 class="main-title">Orbit Chrono</h1>
+    
+    <!-- Top Utility Bar: Timezones & Audio -->
+    <div class="top-controls">
+      <div class="tz-group">
+        <label for="tzSelect">Zone:</label>
+        <select id="tzSelect" class="custom-select">
+          <option value="local">Local System</option>
+          <option value="Asia/Kolkata">Mumbai / New Delhi (IST)</option>
+          <option value="America/New_York">New York (EST/EDT)</option>
+          <option value="Europe/London">London (GMT/BST)</option>
+          <option value="Asia/Tokyo">Tokyo (JST)</option>
+          <option value="UTC">UTC Universal</option>
+        </select>
+        <span class="badge" id="tzBadge">UTC+5:30</span>
+      </div>
+
+      <div class="audio-group">
+        <button id="btnSound" class="icon-btn" title="Toggle Mechanical Sound">
+          <svg id="soundIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM4 9v6h4l5 5V4L8 9H4z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="clock-stage">
+    <div class="clock-wrapper" id="clockWrapper">
+      <!-- Sector progress and Pomodoro arc canvas -->
+      <canvas id="progressCanvas" width="560" height="560"></canvas>
+
+      <!-- Concentric Rotating Dials -->
+      <div class="dial dial-outer" id="dialDays"></div>
+      <div class="dial dial-middle" id="dialMonths"></div>
+      <div class="dial dial-inner" id="dialWeekdays"></div>
+
+      <!-- Center Hub -->
+      <div class="center-hub" id="centerHub" title="Click to cycle views">
+        <!-- View 1: Profile & Greeting -->
+        <div class="hub-view view-profile hidden" id="viewProfile">
+          <span class="greeting-text">HELLO</span>
+          <div class="avatar-disc">
+            <svg class="avatar-icon" viewBox="0 0 24 24">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- View 2: Live Clock Hands (Default) -->
+        <div class="hub-view view-hands" id="viewHands">
+          <div class="hand hand-hour" id="handHour"></div>
+          <div class="hand hand-minute" id="handMinute"></div>
+          <div class="hand hand-second" id="handSecond"></div>
+          <div class="center-pin"></div>
+        </div>
+
+        <!-- View 3: Pomodoro Focus Timer -->
+        <div class="hub-view view-pomo hidden" id="viewPomo">
+          <span class="pomo-label" id="pomoLabel">FOCUS</span>
+          <span class="pomo-digits" id="pomoDigits">25:00</span>
+          <span class="pomo-hint">Click to Start/Pause</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Interactive Control Deck -->
+  <footer class="controls-deck">
+    <div class="modes-bar">
+      <button class="ctrl-btn active" id="btnModeClock">Clock View</button>
+      <button class="ctrl-btn" id="btnModeProfile">Profile View</button>
+      <button class="ctrl-btn" id="btnModePomo">Pomodoro Mode</button>
+    </div>
+
+    <div class="themes-bar">
+      <span>Theme:</span>
+      <button class="theme-dot active" data-set-theme="dark" title="OLED Dark"></button>
+      <button class="theme-dot" data-set-theme="neon" title="Cyberpunk Neon"></button>
+      <button class="theme-dot" data-set-theme="gold" title="Champagne Gold"></button>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
