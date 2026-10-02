@@ -12,7 +12,6 @@ Integrated multi-region timezone synchronization using the native JavaScript Int
 
 Added an integrated Pomodoro focus timer with dynamic countdown arcs and a theme engine persisted across sessions via localStorage.
 
-In Your Resume Under "Technical Skills"
 Frontend: JavaScript (ES6+), HTML5 Canvas, CSS3 (Custom Properties, Neumorphism/Radial UI)
 
 Web APIs: Web Audio API, requestAnimationFrame, Intl.DateTimeFormat, LocalStorage API
